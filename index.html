@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mi Lista</title>
+    <style>
+      body {
+        background-color: #1a1a2e;
+        color: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin-top: 60px;
+      }
+
+      h1 { color: #e94560; }
+
+      input {
+        padding: 10px;
+        width: 250px;
+        border-radius: 8px;
+        border: none;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 10px 20px;
+        background-color: #e94560;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-left: 8px;
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin-top: 30px;
+      }
+
+      li {
+        background-color: #16213e;
+        margin: 8px auto;
+        padding: 12px;
+        width: 300px;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Mi Lista</h1>
+
+    <input id="tarea" placeholder="Escribe una tarea..." />
+    <button onclick="agregar()">Agregar</button>
+
+    <ul id="lista"></ul>
+
+    <script>
+      function agregar() {
+        let tarea = document.getElementById("tarea").value;
+        if (tarea === "") return;
+        agregarTarea(tarea);
+        guardar();
+        document.getElementById("tarea").value = "";
+      }
+
+      function agregarTarea(texto) {
+        let li = document.createElement("li");
+        li.textContent = texto;
+let completar = document.createElement("button");
+completar.textContent = "✅";
+completar.style.marginLeft = "10px";
+completar.onclick = function() {
+  li.style.textDecoration = li.style.textDecoration === "line-through" ? "none" : "line-through";
+  li.style.opacity = li.style.opacity === "0.5" ? "1" : "0.5";
+};
+
+let borrar = document.createElement("button");
+borrar.textContent = "❌";
+borrar.style.marginLeft = "10px";
+borrar.onclick = function() { li.remove(); guardar(); };
+
+li.appendChild(completar);
+li.appendChild(borrar);
+        document.getElementById("lista").appendChild(li);
+      }
+
+      function guardar() {
+        let items = [];
+        document.querySelectorAll("li").forEach(li => {
+          items.push(li.firstChild.textContent);
+        });
+        localStorage.setItem("tareas", JSON.stringify(items));
+      }
+
+      function cargar() {
+        let guardadas = JSON.parse(localStorage.getItem("tareas") || "[]");
+        guardadas.forEach(t => agregarTarea(t));
+      }
+
+      document.getElementById("tarea").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") agregar();
+      });
+
+      cargar();
+    </script>
+  </body>
+</html>
